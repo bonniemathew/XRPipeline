@@ -37,6 +37,12 @@ bool firstMouse = true;
 // Time tracking
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
+float KBDistEventTime = 0.0f;
+float KBEventWaitTime = 0.3f;
+
+// Distortion Toggle
+bool bApplyDistortion = true;
+
 
 // GLFW callbacks
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -77,6 +83,7 @@ int main()
 	glfwSetCursorPosCallback(Wnd, mouse_callback); // callback for mouse events
 	glfwSetScrollCallback(Wnd, scroll_callback); // call back for scroll events
 	glfwSetInputMode(Wnd, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(Wnd, GLFW_STICKY_KEYS, 0);
 
 	// Init GL
 	if (!InitGL())
@@ -85,7 +92,7 @@ int main()
 	// Create cylinder and quads
 	float Height = 5;
 	float Width = 3;
-	int CrossSectionCount = 12;
+	int CrossSectionCount = 30;
 	RenderPrimitive *Cyl = new Cylinder(Height, Width, CrossSectionCount);
 	Cyl->Build();
 	RenderList.push_back(Cyl);
@@ -98,7 +105,8 @@ int main()
 
 	// build and compile our shader programs
 	Shader SceneShader("shaders/v_shader.vs", "shaders/f_shader.fs");
-	Shader DistShader("shaders/v_screen_shader.vs", "shaders/f_screen_shader.fs");
+	Shader DistShader("shaders/v_screen_shader.vs", "shaders/f_dist_shader.fs");
+	Shader NoDistShader("shaders/v_screen_shader.vs", "shaders/f_screen_shader.fs");
 
 	// Create FB for eye buffers
 	GLFramebuffer FB_L(SCR_WIDTH*0.5f, SCR_HEIGHT);
@@ -264,16 +272,20 @@ int main()
 
 			
 		// Render to the Right Viewport
+		if (bApplyDistortion)
+		{
+			DistShader.use();
+		}
+		else {
+			NoDistShader.use();
+		}
 		glViewport(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT);
-
-		DistShader.use(); // todo: move the Shader and texture resources also to the RenderPrimitive
-		glActiveTexture(GL_TEXTURE3);
+		glActiveTexture(GL_TEXTURE3); // todo: move the Shader and texture resources also to the RenderPrimitive
 		glBindTexture(GL_TEXTURE_2D, FB_R.GetColorBufferId());
 		EyeBufferQuad->Draw();
 
 		// Render to the Left Viewport
 		glViewport(0, 0, SCR_WIDTH / 2, SCR_HEIGHT);
-		DistShader.use();
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, FB_L.GetColorBufferId());
 		EyeBufferQuad->Draw();
@@ -294,6 +306,7 @@ int main()
 			delete *iter;
 		}
 	}
+	RenderList.clear();
 
 	return 0;
 }
@@ -312,10 +325,14 @@ void processInput(GLFWwindow *window)
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && abs(lastFrame - KBDistEventTime) >= KBEventWaitTime)
+	{
+			bApplyDistortion ^= 1;
+			KBDistEventTime = lastFrame;
+	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	// make sure the viewport matches the new window dimensions; note that width and 
