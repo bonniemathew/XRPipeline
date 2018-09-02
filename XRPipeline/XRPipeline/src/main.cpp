@@ -44,6 +44,7 @@ float KBEventWaitTime = 0.3f;
 // Distortion Toggle
 bool bApplyDistortion = true;
 
+// Eye buffer enums
 typedef enum
 {
 	EYE_LEFT =0,
@@ -82,7 +83,7 @@ void RenderScene(Eye e, Shader &SceneShader, GLFramebuffer &FB_L, GLFramebuffer 
 		// bind the framebuffer to render to the texture
 		FB_L.Bind();
 		glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
-		glViewport(15, 30, SCR_WIDTH / 2 - 30, SCR_HEIGHT - 60);
+		glViewport(15, 15, SCR_WIDTH / 2 - 30, SCR_HEIGHT - 30); // to have a black border around the eye buffer
 
 
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), CamAspect, Near, Far);
@@ -103,7 +104,7 @@ void RenderScene(Eye e, Shader &SceneShader, GLFramebuffer &FB_L, GLFramebuffer 
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(15, 30, SCR_WIDTH / 2 - 30, SCR_HEIGHT - 60);
+		glViewport(15, 15, SCR_WIDTH / 2 - 30, SCR_HEIGHT - 30); // to have a black border around the eye buffer
 
 
 
@@ -120,7 +121,7 @@ void RenderScene(Eye e, Shader &SceneShader, GLFramebuffer &FB_L, GLFramebuffer 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// calculate the model matrix 
+	// todo: shader and model matrix should be part of the model itself. Move it to RenderPrimitive
 	glm::mat4 model = glm::mat4(1);
 	model = glm::translate(model, glm::vec3(0, -2.5f, 0));
 	SceneShader.setMat4("model", model);
@@ -139,12 +140,14 @@ void RenderScene(Eye e, Shader &SceneShader, GLFramebuffer &FB_L, GLFramebuffer 
 
 int main()
 {
-
+	// List of Scene primitives (in this case, cylinder)
 	std::list<RenderPrimitive*> ScenePrimitivesList;
+	// List of primitives for the pipeline
 	std::list<RenderPrimitive*> PipelinePrimitivesList;
 
 	GLFWwindow* Wnd = Window::Create(SCR_WIDTH, SCR_HEIGHT);
 	Window::MakeCurrent();
+
 	// Set the call backs for events
 	glfwSetFramebufferSizeCallback(Wnd, framebuffer_size_callback); // callback for window resizing
 	glfwSetScrollCallback(Wnd, scroll_callback); // call back for scroll events
@@ -170,7 +173,7 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	// build and compile our shader programs
+	// build and compile shader programs
 	Shader SceneShader("shaders/v_shader.vs", "shaders/f_shader.fs");
 	Shader DistShader("shaders/v_screen_shader.vs", "shaders/f_dist_shader.fs");
 	Shader NoDistShader("shaders/v_screen_shader.vs", "shaders/f_screen_shader.fs");
@@ -304,6 +307,7 @@ void processInput(GLFWwindow *window)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && abs(lastFrame - KBDistEventTime) >= KBEventWaitTime)
 	{
+			// Toggle distortion
 			bApplyDistortion ^= 1;
 			KBDistEventTime = lastFrame;
 	}
@@ -322,7 +326,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(yoffset);
