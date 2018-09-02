@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{550634C6-0A5E-4AC1-8460-3F4CDA89CFA2}</ProjectGuid>
-    <RootNamespace>OpenGLApp</RootNamespace>
+    <RootNamespace>XRPipeline</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <ProjectName>XRPipeline</ProjectName>
   </PropertyGroup>
@@ -130,6 +130,7 @@
     <ClCompile Include="src\cylinder.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\glframebuffer.cpp" />
+    <ClCompile Include="src\gltexture.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mesh.cpp" />
     <ClCompile Include="src\quad.cpp" />
@@ -254,6 +255,7 @@
     <None Include="..\include\glm\gtx\vector_angle.inl" />
     <None Include="..\include\glm\gtx\vector_query.inl" />
     <None Include="..\include\glm\gtx\wrap.inl" />
+    <None Include="shaders\f_dist_shader.fs" />
     <None Include="shaders\f_screen_shader.fs" />
     <None Include="shaders\f_shader.fs" />
     <None Include="shaders\v_screen_shader.vs" />
@@ -411,6 +413,7 @@
     <ClInclude Include="..\include\glm\vec3.hpp" />
     <ClInclude Include="..\include\glm\vec4.hpp" />
     <ClInclude Include="..\include\glm\vector_relational.hpp" />
+    <ClInclude Include="..\include\gltexture.h" />
     <ClInclude Include="..\include\KHR\khrplatform.h" />
     <ClInclude Include="..\include\mesh.h" />
     <ClInclude Include="..\include\quad.h" />

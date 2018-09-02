@@ -136,7 +136,6 @@ void Cylinder::Build()
 		}
 
 
-		// -------------------------------------------------------
 		// If double sided, create extra polygons but face the normals the other way.
 		if (bIsDoubleSided)
 		{
@@ -200,10 +199,8 @@ void Cylinder::Build()
 
 
 		
-		// -------------------------------------------------------
-		// Caps are closed here by triangles that start at 0, then use the points along the circle for the other two corners.
-		// A better looking method uses a vertex in the center of the circle, but uses two more polygons.  We will demonstrate that in a different sample.
-		//if (QuadIndex != 0 && bInCapEnds)
+		// Bottom and Top End
+		//if (QuadIndex != 0)
 		//{
 		//	// Bottom cap
 		//	glm::vec3 capVertex0 = glm::vec3(glm::cos(0) * Radius, glm::sin(0) * Radius, 0.f);
@@ -213,25 +210,20 @@ void Cylinder::Build()
 		//	VertIndex1 = VertexIndex++;
 		//	VertIndex2 = VertexIndex++;
 		//	VertIndex3 = VertexIndex++;
-		//	InVertices[VertIndex1].Position = capVertex0;
-		//	InVertices[VertIndex2].Position = capVertex1;
-		//	InVertices[VertIndex3].Position = capVertex2;
 
-		//	InTriangles[TriangleIndex++] = VertIndex1;
-		//	InTriangles[TriangleIndex++] = VertIndex2;
-		//	InTriangles[TriangleIndex++] = VertIndex3;
+		//	mesh.vertices.push_back(capVertex0);
+		//	mesh.vertices.push_back(capVertex1);
+		//	mesh.vertices.push_back(capVertex2);
 
-		//	InVertices[VertIndex1].UV0 = glm::vec2(0.5f - (glm::cos(0) / 2.0f), 0.5f - (glm::sin(0) / 2.0f));
-		//	InVertices[VertIndex2].UV0 = glm::vec2(0.5f - (glm::cos(-Angle) / 2.0f), 0.5f - (glm::sin(-Angle) / 2.0f));
-		//	InVertices[VertIndex3].UV0 = glm::vec2(0.5f - (glm::cos(-NextAngle) / 2.0f), 0.5f - (glm::sin(-NextAngle) / 2.0f));
+		//	mesh.indices.push_back(VertIndex1);
+		//	mesh.indices.push_back(VertIndex2);
+		//	mesh.indices.push_back(VertIndex3);
 
-		//	glm::vec3 CapNormalCurrent = glm::cross(InVertices[VertIndex1].Position - InVertices[VertIndex3].Position, InVertices[VertIndex2].Position - InVertices[VertIndex3].Position).GetSafeNormal();
-		//	InVertices[VertIndex1].Normal = InVertices[VertIndex2].Normal = InVertices[VertIndex3].Normal = FPackedNormal(CapNormalCurrent);
 
-		//	// Tangents (perpendicular to the surface)
-		//	glm::vec3 SurfaceTangentCap = p0 - p1;
-		//	SurfaceTangentCap = SurfaceTangentCap.GetSafeNormal();
-		//	InVertices[VertIndex1].Tangent = InVertices[VertIndex2].Tangent = InVertices[VertIndex3].Tangent = FPackedNormal(SurfaceTangentCap);
+		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(0) / 2.0f), 0.5f - (glm::sin(0) / 2.0f)));
+		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(-Angle) / 2.0f), 0.5f - (glm::sin(-Angle) / 2.0f)));
+		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(-NextAngle) / 2.0f), 0.5f - (glm::sin(-NextAngle) / 2.0f)));
+
 
 		//	// Top cap
 		//	capVertex0 = capVertex0 + Offset;
@@ -241,25 +233,19 @@ void Cylinder::Build()
 		//	VertIndex1 = VertexIndex++;
 		//	VertIndex2 = VertexIndex++;
 		//	VertIndex3 = VertexIndex++;
-		//	InVertices[VertIndex1].Position = capVertex0;
-		//	InVertices[VertIndex2].Position = capVertex1;
-		//	InVertices[VertIndex3].Position = capVertex2;
 
-		//	InTriangles[TriangleIndex++] = VertIndex3;
-		//	InTriangles[TriangleIndex++] = VertIndex2;
-		//	InTriangles[TriangleIndex++] = VertIndex1;
+		//	mesh.vertices.push_back(capVertex0);
+		//	mesh.vertices.push_back(capVertex1);
+		//	mesh.vertices.push_back(capVertex2);
 
-		//	InVertices[VertIndex1].UV0 = glm::vec2(0.5f - (glm::cos(0) / 2.0f), 0.5f - (glm::sin(0) / 2.0f));
-		//	InVertices[VertIndex2].UV0 = glm::vec2(0.5f - (glm::cos(Angle) / 2.0f), 0.5f - (glm::sin(Angle) / 2.0f));
-		//	InVertices[VertIndex3].UV0 = glm::vec2(0.5f - (glm::cos(NextAngle) / 2.0f), 0.5f - (glm::sin(NextAngle) / 2.0f));
+		//	mesh.indices.push_back(VertIndex3);
+		//	mesh.indices.push_back(VertIndex2);
+		//	mesh.indices.push_back(VertIndex1);
 
-		//	CapNormalCurrent = glm::cross(InVertices[VertIndex1].Position - InVertices[VertIndex3].Position, InVertices[VertIndex2].Position - InVertices[VertIndex3].Position).GetSafeNormal();
-		//	InVertices[VertIndex1].Normal = InVertices[VertIndex2].Normal = InVertices[VertIndex3].Normal = FPackedNormal(CapNormalCurrent);
+		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(0) / 2.0f), 0.5f - (glm::sin(0) / 2.0f)));
+		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(Angle) / 2.0f), 0.5f - (glm::sin(Angle) / 2.0f)));
+		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(NextAngle) / 2.0f), 0.5f - (glm::sin(NextAngle) / 2.0f)));
 
-		//	// Tangents (perpendicular to the surface)
-		//	SurfaceTangentCap = p0 - p1;
-		//	SurfaceTangentCap = SurfaceTangentCap.GetSafeNormal();
-		//	InVertices[VertIndex1].Tangent = InVertices[VertIndex2].Tangent = InVertices[VertIndex3].Tangent = FPackedNormal(SurfaceTangentCap);
 		//}
 	}
 }
@@ -268,6 +254,15 @@ void Cylinder::Draw()
 {
 	// render Cylinder
 	glBindVertexArray(VAO);
+
+	// bind textures on corresponding texture units
+	if (GeomTexture != nullptr)
+	{
+		glActiveTexture(GeomTexture->GetTexUnit());
+		glBindTexture(GL_TEXTURE_2D, GeomTexture->GetID());
+	}
+
+	// draw call
 	glDrawElements( GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
 
 

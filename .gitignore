@@ -1,0 +1,8 @@
+*.suo
+*.log
+*.tlog
+*.obj
+*.pdb
+*.idb
+*.db
+Debug

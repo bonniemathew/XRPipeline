@@ -57,6 +57,9 @@
     <ClCompile Include="src\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gltexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\glm\gtx\associated_min_max.inl">
@@ -420,6 +423,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\v_shader.vs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\f_dist_shader.fs">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
@@ -896,6 +902,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\quad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\gltexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

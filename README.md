@@ -7,14 +7,14 @@ Folder Structure
 -----------------
 Include Files - XRPipeline/include
 Libs - XRPipeline/libraries
-Src - XRPipeline/OpenGLApp/src
-Images - XRPipeline/OpenGLApp/res
-Shader codes - XRPipeline/OpenGLApp/shaders
+Src - XRPipeline/XRPipeline/src
+Images - XRPipeline/XRPipeline/res
+Shader codes - XRPipeline/XRPipeline/shaders
 
 Input Controls
 ---------------
 W, A, S, D - For moving forward, left, backward and right.
-Mouse to look around.
-'v' - For toggling ON/OFF distortion
+Mouse scroll for Zoom
+'V' - For toggling ON/OFF distortion
 
 
