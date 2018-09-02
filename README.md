@@ -5,16 +5,16 @@ Visual Studio Version - Visual Studio Community 2015
 
 Folder Structure
 -----------------
-Include Files - XRPipeline/include
-Libs - XRPipeline/libraries
-Src - XRPipeline/XRPipeline/src
-Images - XRPipeline/XRPipeline/res
-Shader codes - XRPipeline/XRPipeline/shaders
+Include Files - XRPipeline/include <br />
+Libs - XRPipeline/libraries <br />
+Src - XRPipeline/XRPipeline/src <br />
+Images - XRPipeline/XRPipeline/res <br />
+Shader codes - XRPipeline/XRPipeline/shaders <br />
 
 Input Controls
 ---------------
-W, A, S, D - For moving forward, left, backward and right.
-Mouse scroll for Zoom
-'V' - For toggling ON/OFF distortion
+W, A, S, D - For moving forward, left, backward and right. <br />
+Mouse scroll for Zoom <br />
+'V' - For toggling ON/OFF distortion <br />
 
 
