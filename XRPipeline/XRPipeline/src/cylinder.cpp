@@ -98,45 +98,11 @@ void Cylinder::Build()
 		mesh.uv.push_back(glm::vec2((u3 * SubDivCount - UVMapStartSubDiv) / (UVMapEndSubDiv - UVMapStartSubDiv), 1.0f));
 		mesh.uv.push_back(glm::vec2((u4 * SubDivCount - UVMapStartSubDiv) / (UVMapEndSubDiv - UVMapStartSubDiv), 1.0f));
 
-		// Normals
+		// Normals - 
 		glm::vec3 NormalCurrent = glm::cross(mesh.vertices[VertIndex1] - mesh.vertices[VertIndex3], mesh.vertices[VertIndex2] - mesh.vertices[VertIndex3]);
 
-		if (bSmoothNormals)
-		{
-			// To smooth normals we give the vertices different values than the polygon they belong to.
-			// GPUs know how to interpolate between those.
-			// I do this here as an average between normals of two adjacent polygons
-			float NextNextAngle = (float)(QuadIndex + 2) * AngleBetweenQuads;
-			glm::vec3 p4 = glm::vec3(glm::cos(NextNextAngle) * Radius, glm::sin(NextNextAngle) * Radius, 0.f);
 
-			// p1 to p4 to p2
-			glm::vec3 NormalNext = glm::cross(p1 - p2, p4 - p2);
-			glm::vec3 AverageNormalRight = (NormalCurrent + NormalNext) * 0.5f;
-			AverageNormalRight = AverageNormalRight;
-
-			float PreviousAngle = (float)(QuadIndex - 1) * AngleBetweenQuads;
-			glm::vec3 pMinus1 = glm::vec3(glm::cos(PreviousAngle) * Radius, glm::sin(PreviousAngle) * Radius, 0.f);
-
-			// p0 to p3 to pMinus1
-			glm::vec3 NormalPrevious = glm::cross(p0 - pMinus1, p3 - pMinus1);
-			glm::vec3 AverageNormalLeft = (NormalCurrent + NormalPrevious) *0.5f;
-			AverageNormalLeft = AverageNormalLeft;
-
-			mesh.normals.push_back(AverageNormalLeft);
-			mesh.normals.push_back(AverageNormalRight);
-			mesh.normals.push_back(AverageNormalRight);
-			mesh.normals.push_back(AverageNormalLeft);
-		}
-		else
-		{
-			mesh.normals.push_back(NormalCurrent);
-			mesh.normals.push_back(NormalCurrent);
-			mesh.normals.push_back(NormalCurrent);
-			mesh.normals.push_back(NormalCurrent);
-		}
-
-
-		// If double sided, create extra polygons but face the normals the other way.
+		// If double sided, create extra polygons with different winding order
 		if (bIsDoubleSided)
 		{
 			VertIndex1 = VertexIndex++;
@@ -153,9 +119,9 @@ void Cylinder::Build()
 			mesh.indices.push_back(VertIndex1);
 			mesh.indices.push_back(VertIndex3);
 
-			mesh.indices.push_back(VertIndex4);
-			mesh.indices.push_back(VertIndex1);
 			mesh.indices.push_back(VertIndex3);
+			mesh.indices.push_back(VertIndex1);
+			mesh.indices.push_back(VertIndex2);
 
 			// UVs  
 			float u1, u2, u3, u4;
@@ -169,12 +135,6 @@ void Cylinder::Build()
 			mesh.uv.push_back(glm::vec2((u2 * SubDivCount - UVMapStartSubDiv) / (UVMapEndSubDiv - UVMapStartSubDiv), 0.0f));
 			mesh.uv.push_back(glm::vec2((u3 * SubDivCount - UVMapStartSubDiv) / (UVMapEndSubDiv - UVMapStartSubDiv), 1.0f));
 			mesh.uv.push_back(glm::vec2((u4 * SubDivCount - UVMapStartSubDiv) / (UVMapEndSubDiv - UVMapStartSubDiv), 1.0f));
-
-
-			mesh.normals.push_back(NormalCurrent);
-			mesh.normals.push_back(NormalCurrent);
-			mesh.normals.push_back(NormalCurrent);
-			mesh.normals.push_back(NormalCurrent);
 
 		}
 
@@ -197,56 +157,6 @@ void Cylinder::Build()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VIB);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.size() * sizeof(unsigned int), &mesh.indices[0], GL_STATIC_DRAW);
 
-
-		
-		// Bottom and Top End
-		//if (QuadIndex != 0)
-		//{
-		//	// Bottom cap
-		//	glm::vec3 capVertex0 = glm::vec3(glm::cos(0) * Radius, glm::sin(0) * Radius, 0.f);
-		//	glm::vec3 capVertex1 = glm::vec3(glm::cos(Angle) * Radius, glm::sin(Angle) * Radius, 0.f);
-		//	glm::vec3 capVertex2 = glm::vec3(glm::cos(NextAngle) * Radius, glm::sin(NextAngle) * Radius, 0.f);
-
-		//	VertIndex1 = VertexIndex++;
-		//	VertIndex2 = VertexIndex++;
-		//	VertIndex3 = VertexIndex++;
-
-		//	mesh.vertices.push_back(capVertex0);
-		//	mesh.vertices.push_back(capVertex1);
-		//	mesh.vertices.push_back(capVertex2);
-
-		//	mesh.indices.push_back(VertIndex1);
-		//	mesh.indices.push_back(VertIndex2);
-		//	mesh.indices.push_back(VertIndex3);
-
-
-		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(0) / 2.0f), 0.5f - (glm::sin(0) / 2.0f)));
-		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(-Angle) / 2.0f), 0.5f - (glm::sin(-Angle) / 2.0f)));
-		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(-NextAngle) / 2.0f), 0.5f - (glm::sin(-NextAngle) / 2.0f)));
-
-
-		//	// Top cap
-		//	capVertex0 = capVertex0 + Offset;
-		//	capVertex1 = capVertex1 + Offset;
-		//	capVertex2 = capVertex2 + Offset;
-
-		//	VertIndex1 = VertexIndex++;
-		//	VertIndex2 = VertexIndex++;
-		//	VertIndex3 = VertexIndex++;
-
-		//	mesh.vertices.push_back(capVertex0);
-		//	mesh.vertices.push_back(capVertex1);
-		//	mesh.vertices.push_back(capVertex2);
-
-		//	mesh.indices.push_back(VertIndex3);
-		//	mesh.indices.push_back(VertIndex2);
-		//	mesh.indices.push_back(VertIndex1);
-
-		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(0) / 2.0f), 0.5f - (glm::sin(0) / 2.0f)));
-		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(Angle) / 2.0f), 0.5f - (glm::sin(Angle) / 2.0f)));
-		//	mesh.uv.push_back(glm::vec2(0.5f - (glm::cos(NextAngle) / 2.0f), 0.5f - (glm::sin(NextAngle) / 2.0f)));
-
-		//}
 	}
 }
 
